@@ -1,10 +1,40 @@
-from train_data_t_sets import T_CARRIAGE_TO_SET
+from t_set_data import T_CARRIAGE_TO_SET
+from m_set_data import M_CARRIAGE_TO_SET
+from k_set_data import K_CARRIAGE_TO_SET
+
 
 def find_train_set(carriage_number):
     # convert to string and strip whitespace
     carriage = str(carriage_number).strip().upper()
 
-    # check t sets
+    # CHECK LOOKUP-BASED SETS FIRST (M, K, T)
+    # M sets
+    if carriage in M_CARRIAGE_TO_SET:
+        set_number = M_CARRIAGE_TO_SET[carriage]
+        # Determine carriage type based on prefix
+        if carriage.startswith('D'):
+            carriage_type = 'driving trailer'
+        elif carriage.startswith('N'):
+            carriage_type = 'non-driving motor'
+        else:
+            carriage_type = 'unknown type'
+
+        return carriage.lower(), carriage_type, f"{set_number} (4 car millennium)"
+
+    # K sets
+    if carriage in K_CARRIAGE_TO_SET:
+        set_number = K_CARRIAGE_TO_SET[carriage]
+        # Determine carriage type based on prefix
+        if carriage.startswith('C'):
+            carriage_type = 'driving motor'
+        elif carriage.startswith('T'):
+            carriage_type = 'non-driving trailer'
+        else:
+            carriage_type = 'unknown type'
+
+        return carriage.lower(), carriage_type, f"{set_number} (4 car k set)"
+
+    # T sets
     if carriage in T_CARRIAGE_TO_SET:
         set_number = T_CARRIAGE_TO_SET[carriage]
         # Determine carriage type based on prefix
@@ -14,12 +44,32 @@ def find_train_set(carriage_number):
             carriage_type = 'non-driving motor'
         else:
             carriage_type = 'unknown type'
-        
+
         return carriage.lower(), carriage_type, f"{set_number} (4 car tangara)"
 
-    # then check other sets
+    # THEN CHECK ALGORITHMIC SETS (A, B, D, H)
     # carriage type definitions
     carriage_types = {
+        # A sets - 8 car waratah
+        'D63': {'type': 'driving trailer', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'N53': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'N55': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'T65': {'type': 'non-driving trailer', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'T66': {'type': 'non-driving trailer', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'N56': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'N54': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+        'D64': {'type': 'driving trailer', 'cars': 8, 'prefix': 'A', 'name': 'waratah'},
+
+        # B sets - 8 car waratah 2
+        'D11': {'type': 'driving trailer', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'N17': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'N19': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'T13': {'type': 'non-driving trailer', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'T14': {'type': 'non-driving trailer', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'N18': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'N16': {'type': 'non-driving motor', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+        'D12': {'type': 'driving trailer', 'cars': 8, 'prefix': 'B', 'name': 'waratah 2'},
+
         # D sets - 4 car mariyung
         'DD97': {'type': 'driving trailer', 'cars': 4, 'prefix': 'D', 'name': 'mariyung'},
         'DN85': {'type': 'non-driving motor', 'cars': 4, 'prefix': 'D', 'name': 'mariyung'},
@@ -57,8 +107,17 @@ def find_train_set(carriage_number):
         # calculate set number based on carriage number
         set_num = None
 
+        # A and B set calculation logic (simple: last 2 digits)
+        if carriage.startswith(('D63', 'N53', 'N55', 'T65', 'T66', 'N56', 'N54', 'D64')):
+            # A sets - extract last 2 digits
+            set_num = int(carriage[-2:])
+
+        elif carriage.startswith(('D11', 'N17', 'N19', 'T13', 'T14', 'N18', 'N16', 'D12')):
+            # B sets - extract last 2 digits
+            set_num = int(carriage[-2:])
+
         # oscar calculation logic
-        if carriage.startswith('OD69'):
+        elif carriage.startswith('OD69'):
             carriage_num = int(carriage[4:])
             # special cases first
             if carriage_num == 6921 or carriage_num == 6922:
@@ -108,6 +167,8 @@ def find_train_set(carriage_number):
         # format the set number
         if matched_type['prefix'] == 'H':
             formatted_set = f"H{set_num:02d}"
+        elif matched_type['prefix'] in ['A', 'B']:
+            formatted_set = f"{matched_type['prefix']}{set_num:02d}"
         else:
             formatted_set = f"{matched_type['prefix']}{set_num}"
 

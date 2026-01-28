@@ -4,3 +4,4 @@ a simple python checker that converts your nsw train carriage number into the tr
 - [ ] implement other sets
 - [ ] adjust output for h sets to remove hyphen
 - [ ] adjust output for single digit set numbers to remove leading 0
+- [ ] fix oscars outputting incorrectly
