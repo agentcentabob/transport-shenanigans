@@ -1,7 +1,23 @@
+from train_data_t_sets import T_CARRIAGE_TO_SET
+
 def find_train_set(carriage_number):
     # convert to string and strip whitespace
     carriage = str(carriage_number).strip().upper()
 
+    # check t sets
+    if carriage in T_CARRIAGE_TO_SET:
+        set_number = T_CARRIAGE_TO_SET[carriage]
+        # Determine carriage type based on prefix
+        if carriage.startswith('D'):
+            carriage_type = 'driving trailer'
+        elif carriage.startswith('N'):
+            carriage_type = 'non-driving motor'
+        else:
+            carriage_type = 'unknown type'
+        
+        return carriage.lower(), carriage_type, f"{set_number} (4 car tangara)"
+
+    # then check other sets
     # carriage type definitions
     carriage_types = {
         # D sets - 4 car mariyung
